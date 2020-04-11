@@ -7,4 +7,4 @@ def hello():
     return "What's <u>with</u> all that jibber jabber?"
 
 if __name__ == '__main__':
-      app.run(host='http://35.230.92.154/', port=80)
+      app.run(host='0.0.0.0', port=80)
