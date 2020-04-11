@@ -1,0 +1,10 @@
+runtime: python
+env: flex
+entrypoint: gunicorn -b :$PORT main:app --timeout 120
+
+env_variables:
+  FLASK_APP: flaskblog.py
+
+runtime_config:
+  python_version: 3
+
