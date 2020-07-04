@@ -1,73 +1,10 @@
 const projectList = document.querySelector('.guides');
 const loggedInLinks = document.querySelectorAll('.logged-in');
 const loggedOutLinks = document.querySelectorAll('.logged-out');
-const API_ROOT = 'https://ldk02iol3d.execute-api.us-west-2.amazonaws.com'
-const USER_PATH = '/user'
-const IS_LOGGED_IN_PATH = API_ROOT + USER_PATH + '/is_logged_in';
 
-// password configuration
-$("#signup-password").on("focusout", function (e) {
-    if ($(this).val() != $("#passwordConfirm").val()) {
-        $("#passwordConfirm").removeClass("valid").addClass("invalid");
-    } else {
-        $("#passwordConfirm").removeClass("invalid").addClass("valid");
-    }
-});
-
-$("#passwordConfirm").on("keyup", function (e) {
-    if ($("#signup-password").val() != $(this).val()) {
-        $(this).removeClass("valid").addClass("invalid");
-    } else {
-        $(this).removeClass("invalid").addClass("valid");
-    }
-});
-
-const setupUI = () => {
-    var login_cookie = getCookie('login');
-
-    if (login_cookie) {
-        login_cookie_dict = JSON.parse(login_cookie)
-
-        if ("user_id" in login_cookie_dict && "token" in login_cookie_dict) {
-            $.ajax({
-                type: 'GET',
-                url: IS_LOGGED_IN_PATH,
-                contentType: 'application/json',
-                data: {
-                    user_id: login_cookie_dict["user_id"],
-                    token: login_cookie_dict["token"]},
-                dataType: 'json',
-
-                success: function(data, textStatus, jqXHR) {
-                    if (data["message"] === "success") {
-                        console.log("user is logged in");
-                        flip_login(true, login_cookie_dict["user_id"], login_cookie_dict["token"])
-                    } else {
-                        console.log("user token validation failure")
-                        console.log(data)
-                        flip_login(false, null, null)
-                    }
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    flip_login(false, null, null)
-                }
-            });
-        } else { // garbage in the cookie
-            flip_login(false, null, null)
-        }
-    } else { // no cookie
-        flip_login(false, null, null)
-    }
-}
-
-const flip_login = (user_logged_in, user_id, token) => {
-    if (user_logged_in) {
-        setCookie("login", `{"user_id":"${user_id}","token":"${token}"}`, 365)
-    } else {
-        setCookie("login", "", 365)
-    }
-    const loggedInDisplay = ((user_logged_in) ? 'block' : 'none');
-    const loggedOutDisplay = ((user_logged_in) ? 'none' : 'block');
+const setupUI = (user) => {
+    const loggedInDisplay = ((user) ? 'block' : 'none');
+    const loggedOutDisplay = ((user) ? 'none' : 'block');
 
     loggedInLinks.forEach(link => link.style.display = loggedInDisplay);
     loggedOutLinks.forEach(link => link.style.display = loggedOutDisplay);
@@ -149,37 +86,3 @@ document.addEventListener('DOMContentLoaded', function() {
   M.Collapsible.init(items);
 
 });
-
-function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  var expires = "expires="+d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
-function checkCookie() {
-  var user = getCookie("username");
-  if (user != "") {
-    alert("Welcome again " + user);
-  } else {
-    user = prompt("Please enter your name:", "");
-    if (user != "" && user != null) {
-      setCookie("username", user, 365);
-    }
-  }
-}

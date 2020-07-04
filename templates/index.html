@@ -6,6 +6,17 @@
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+  // polyfill for RegExp.escape
+  if(!RegExp.escape) {
+    RegExp.escape = function(s) {
+      return String(s).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
+  }
+
+</script>
   <title>WorkPlanned</title>
 </head>
 <body class="grey lighten-3">
@@ -39,7 +50,7 @@
   <!-- SIGN UP MODAL -->
   <div id="modal-signup" class="modal">
     <div class="modal-content">
-      <h4>Sign up</h4><br />
+      <h4>Sign up</h4>
       <form id="signup-form">
         <div class="input-field">
           <input type="text" id="signup-first-name" required />
@@ -54,11 +65,16 @@
           <label for="signup-email">Email address</label>
         </div>
         <div class="input-field">
-          <input type="password" id="signup-password" required />
+          <input type="password" id="signup-password" class="validate" required/>
           <label for="signup-password">Choose password</label>
+        </div>
+        <div class="input-field">
+          <input title="must match password field" id="passwordConfirm" name="passwordConfirm" type="password" required />
+          <label id="lblPasswordConfirm" for="passwordConfirm" data-error="Password not match" data-success="Password Match">Password (Confirm)</label>
         </div>
         <button class="btn yellow darken-2 z-depth-0">Sign up</button>
       </form>
+      <span id="signup-error" class="helper-text" data-error=""></span>
     </div>
   </div>
 
@@ -76,7 +92,9 @@
           <label for="login-password">Your password</label>
         </div>
         <button class="btn yellow darken-2 z-depth-0">Login</button>
+        </span>
       </form>
+      <span id="login-error" class="helper-text" data-error="Your log-in credentials don't quite look right."></span>
     </div>
   </div>
 
@@ -110,10 +128,10 @@
 
   <!-- Compiled and minified JavaScript -->
   <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-functions.js"></script>
+<!--  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>-->
+<!--  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-auth.js"></script>-->
+<!--  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-firestore.js"></script>-->
+<!--  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-functions.js"></script>-->
 
   <script>
     // Your web app's Firebase configuration
@@ -126,19 +144,26 @@
       messagingSenderId: "417125061692",
       appId: "1:417125061692:web:2b8794f3fc1a31429c5f39"
     };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase - DISABLE
+    // firebase.initializeApp(firebaseConfig);
 
     // make auth and firebase references
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const functions = firebase.functions();
+    //const auth = firebase.auth();
+    //const db = firebase.firestore();
+    //const functions = firebase.functions();
 
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
   <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
-<script src="{{ url_for('static', filename='scripts/auth.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/auth.js') }}"></script>
+
+  <script>
+    $(document).ready(function() {
+      setupUI();
+    });
+
+  </script>
 </body>
 </html>
